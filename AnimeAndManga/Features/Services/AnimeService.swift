@@ -2,7 +2,6 @@ import Foundation
 
 // MARK: - Service Protocol
 
-/// Defines the contract for any Anime Service.
 protocol AnimeServiceProtocol {
     /// Fetches a list of animes with the given limit.
     /// - Parameter limit: The maximum number of animes to fetch.
@@ -12,18 +11,22 @@ protocol AnimeServiceProtocol {
 
 // MARK: - Anime Service Implementation
 
-/// A concrete implementation of `AnimeServiceProtocol` that uses URLSession.
 final class AnimeService: AnimeServiceProtocol {
-    private let clientID: String
-    private let baseURL: URL
-
-    /// Initializes the service with a given Client ID.
-    /// - Parameter clientID: Your MyAnimeList Client ID.
-    /// - Parameter baseURL: Base URL for the MyAnimeList anime endpoint. Defaults to "https://api.myanimelist.net/v2/anime".
-    init(clientID: String, baseURL: URL = URL(string: "https://api.myanimelist.net/v2/anime")!) {
-        self.clientID = clientID
-        self.baseURL = baseURL
+    
+    // MARK: Initialization
+    
+    /// Initializes the service with a given app configuration
+    /// - Parameter configuration: Your base app configuration
+    init(configuration: AppConfigurationProtocol = AppConfiguration.shared) {
+        self.configuration = configuration
     }
+    
+    // MARK: Properties
+    
+    private let configuration: AppConfigurationProtocol
+    private let serviceURL = "anime"
+
+    // MARK: Methods
     
     /// Fetches the anime list from the MyAnimeList API.
     /// - Parameter limit: Number of animes to fetch (default is 10).

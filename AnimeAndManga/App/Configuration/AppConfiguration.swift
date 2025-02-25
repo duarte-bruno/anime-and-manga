@@ -1,14 +1,13 @@
 import Foundation
 
-protocol AppConfigProtocol {
+protocol AppConfigurationProtocol {
     var clientID: String { get }
     var host: String { get }
 }
 
-final class AppConfig: AppConfigProtocol {
-    static let shared = AppConfig()
+final class AppConfiguration: AppConfigurationProtocol {
     
-    private let config: [String: Any]
+    // MARK: Initialization
     
     // Private initializer to enforce the singleton pattern.
     private init() {
@@ -21,6 +20,11 @@ final class AppConfig: AppConfigProtocol {
         }
         self.config = configDictionary
     }
+    
+    // MARK: Properties
+    
+    static let shared = AppConfiguration()
+    private let config: [String: Any]
     
     // Accessor for the MyAnimeList Client ID.
     var clientID: String {
