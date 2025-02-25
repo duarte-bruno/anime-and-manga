@@ -2,6 +2,7 @@ import Foundation
 
 protocol AppConfigurationProtocol {
     var clientID: String { get }
+    var clientIDKey: String { get }
     var host: String { get }
 }
 
@@ -26,7 +27,7 @@ final class AppConfiguration: AppConfigurationProtocol {
     static let shared = AppConfiguration()
     private let config: [String: Any]
     
-    // Accessor for the MyAnimeList Client ID.
+    /// Accessor for the MyAnimeList Client ID.
     var clientID: String {
         guard let id = config["MYANIMELIST_CLIENT_ID"] as? String else {
             fatalError("MYANIMELIST_CLIENT_ID not set in Config.plist")
@@ -34,7 +35,15 @@ final class AppConfiguration: AppConfigurationProtocol {
         return id
     }
     
-    // Accessor for the host (e.g., API base URL).
+    /// Accessor for the MyAnimeList Client ID key.
+    var clientIDKey: String {
+        guard let host = config["MYANIMELIST_CLIENT_ID_KEY"] as? String else {
+            fatalError("MYANIMELIST_CLIENT_ID_KEY not set in Config.plist")
+        }
+        return host
+    }
+    
+    /// Accessor for the host (e.g., API base URL).
     var host: String {
         guard let host = config["MYANIMELIST_API_HOST"] as? String else {
             fatalError("MYANIMELIST_API_HOST not set in Config.plist")

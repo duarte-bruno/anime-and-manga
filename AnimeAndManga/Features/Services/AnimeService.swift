@@ -5,8 +5,8 @@ import Foundation
 protocol AnimeServiceProtocol {
     /// Fetches a list of animes with the given limit.
     /// - Parameter limit: The maximum number of animes to fetch.
-    /// - Returns: An array of `Anime` objects.
-    func fetchAnimeList(limit: Int) async throws -> [Anime]
+    /// - Returns: An array of `AnimeData` objects.
+    func fetchAnimeList(limit: Int) async throws -> [AnimeData]
 }
 
 // MARK: - Anime Service Implementation
@@ -24,19 +24,19 @@ final class AnimeService: AnimeServiceProtocol {
     // MARK: Properties
     
     private let configuration: AppConfigurationProtocol
-    private let serviceURL = "anime"
 
     // MARK: Methods
     
-    /// Fetches the anime list from the MyAnimeList API.
-    /// - Parameter limit: Number of animes to fetch (default is 10).
-    /// - Returns: An array of `Anime` objects.
-    func fetchAnimeList(limit: Int = 10) async throws -> [Anime] {
-        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
+    func fetchAnimeList(limit: Int = 50) async throws -> [AnimeData] {
+        guard let url = URL(string: configuration.host + "anime/ranking") else {
+            throw URLError(.badURL)
+        }
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         components?.queryItems = [
+            URLQueryItem(name: "ranking_type", value: "bypopularity"),
             URLQueryItem(name: "limit", value: "\(limit)"),
             // Requesting specific fields to optimize the response.
-            URLQueryItem(name: "fields", value: "id,title,main_picture")
+            URLQueryItem(name: "fields", value: "id,title,main_picture,mean")
         ]
         guard let url = components?.url else {
             throw URLError(.badURL)
@@ -45,7 +45,7 @@ final class AnimeService: AnimeServiceProtocol {
         // Create the request with the necessary header for authentication.
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.setValue(clientID, forHTTPHeaderField: "X-MAL-CLIENT-ID")
+        request.setValue(configuration.clientID, forHTTPHeaderField: configuration.clientIDKey)
         
         // Perform the network call.
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -56,7 +56,6 @@ final class AnimeService: AnimeServiceProtocol {
         // Decode the JSON response into our models.
         let decoder = JSONDecoder()
         let animeListResponse = try decoder.decode(AnimeListResponse.self, from: data)
-        let animeList = animeListResponse.data.map { $0.node }
-        return animeList
+        return animeListResponse.data
     }
 }

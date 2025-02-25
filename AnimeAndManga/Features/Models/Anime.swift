@@ -2,18 +2,30 @@ import Foundation
 
 // MARK: - Models
 
-/// Represents an Anime entity.
 struct Anime: Codable, Identifiable {
     let id: Int
     let title: String
-    let main_picture: AnimeImage?
+    let mainPicture: AnimeImage?
+    let score: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case mainPicture = "main_picture"
+        case score = "mean"
+    }
 }
 
-/// Represents the main image of an anime.
 struct AnimeImage: Codable {
     let large: String?
     let medium: String?
 }
+
+struct AnimeRanking: Codable {
+    let rank: Int
+}
+
+// MARK: - Response Models
 
 /// The top-level response from the Anime Listing API.
 struct AnimeListResponse: Codable {
@@ -23,4 +35,5 @@ struct AnimeListResponse: Codable {
 /// Wraps the anime node returned by the API.
 struct AnimeData: Codable {
     let node: Anime
+    let ranking: AnimeRanking
 }
