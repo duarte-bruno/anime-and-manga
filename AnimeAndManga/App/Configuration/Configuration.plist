@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MYANIMELIST_API_HOST</key>
+	<string>https://api.myanimelist.net/v2/</string>
+	<key>MYANIMELIST_CLIENT_ID</key>
+	<string>c752b6c2f0e4ee4930ace5a9322d1501</string>
+</dict>
+</plist>
